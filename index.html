@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Special for Mahes 🩵</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Canvas Confetti Library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Custom CSS Link -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- TAMBAHKAN BAGIAN INI DI SINI -->
+  <style>
+    #heartCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between items-center relative text-gray-800 selection:bg-pink-200">
+
+  <!-- Background Canvas Efek Blubuk-blubuk Hati -->
+  <canvas id="heartCanvas"></canvas>
+
+  <!-- ================= LAYAR TIUP LILIN (SCREEN 1) ================= -->
+  <div id="candle-screen" class="fixed inset-0 z-50 bg-sky-50 flex flex-col items-center justify-center p-6 text-center transition-opacity duration-700">
+    <div class="bg-white p-8 rounded-3xl shadow-xl max-w-sm w-full flex flex-col items-center border border-sky-100">
+      <span class="text-xs uppercase tracking-widest text-sky-500 font-bold mb-2">Special Day for Mahes</span>
+      <h2 class="text-xl font-extrabold text-gray-800 mb-1">Make a Wish! 🎂</h2>
+      <p class="text-xs text-gray-500 mb-6">Ketuk lilinnya untuk tiup & buat permohonan</p>
+
+      <!-- Visual Lilin & Kue -->
+      <div id="candle-btn" onclick="blowCandle()" class="cursor-pointer transform hover:scale-110 transition duration-300 relative my-4">
+        <!-- Api Lilin -->
+        <div id="flame" class="w-4 h-6 bg-amber-400 rounded-full mx-auto animate-bounce shadow-[0_0_12px_#f59e0b] border border-amber-200"></div>
+        <!-- Batang Lilin -->
+        <div class="w-3 h-8 bg-sky-300 mx-auto rounded-t-sm"></div>
+        <!-- Kue Ulang Tahun -->
+        <div class="w-28 h-14 bg-pink-200 rounded-t-2xl mx-auto flex items-center justify-center border-b-4 border-pink-300 shadow-sm relative">
+          <span class="text-2xl">🍰</span>
+        </div>
+      </div>
+
+      <p id="candle-hint" class="text-xs text-sky-600 font-semibold mt-4 animate-pulse">
+        👇 Tap lilinnya ya! (0/3)
+      </p>
+    </div>
+  </div>
+
+  <!-- Background Canvas Efek Hujan Hati -->
+  <canvas id="heartCanvas"></canvas>
+
+  <!-- ================= MUSIC WIDGET (POJOK KANAN ATAS DENGAN PLAYLIST DROPDOWN) ================= -->
+  <div class="fixed top-4 right-4 z-50">
+    <div class="relative">
+      <!-- Tombol Utama Pemutar Musik -->
+      <button onclick="toggleMusicMenu()" class="bg-white/90 backdrop-blur-md flex items-center gap-2 px-4 py-2.5 rounded-full text-sky-600 font-semibold text-xs hover:bg-white transition shadow-lg border border-sky-100">
+        <i id="musicIcon" class="fa-solid fa-music animate-bounce text-pink-400"></i>
+        <span id="musicText">Playlist 🎵</span>
+        <i class="fa-solid fa-chevron-down text-[10px] text-sky-400 ml-1"></i>
+      </button>
+
+      <!-- Menu Dropdown Pilihan 7 Lagu -->
+      <div id="musicDropdown" class="hidden absolute right-0 mt-2 w-64 bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl border border-sky-100 p-2 text-left space-y-1 z-50">
+        <div class="px-3 py-2 border-b border-gray-100 mb-1">
+          <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Pilih Lagu Kesukaan</p>
+          <p id="now-playing" class="text-xs font-semibold text-sky-600 truncate">Shape of My Heart</p>
+        </div>
+
+        <button onclick="changeSong('music.mp3', 'Shape of My Heart - Backstreet Boys')" class="w-full text-left px-3 py-2 rounded-xl text-xs hover:bg-sky-50 text-gray-700 font-medium transition">🎵 Shape of My Heart</button>
+        <button onclick="changeSong('jatuh hati.mp3', 'Jatuh Hati - Raisa')" class="w-full text-left px-3 py-2 rounded-xl text-xs hover:bg-sky-50 text-gray-700 font-medium transition">🎵 Jatuh Hati - Raisa</button>
+        <button onclick="changeSong('sempurna.mp3', 'Sempurna - Andra & The Backbone')" class="w-full text-left px-3 py-2 rounded-xl text-xs hover:bg-sky-50 text-gray-700 font-medium transition">🎵 Sempurna</button>
+        <button onclick="changeSong('kaktus.mp3', 'Kaktus - Suara Kayu')" class="w-full text-left px-3 py-2 rounded-xl text-xs hover:bg-sky-50 text-gray-700 font-medium transition">🎵 Kaktus - Suara Kayu</button>
+        <button onclick="changeSong('jatuh suka.mp3', 'Jatuh Suka - Tulus')" class="w-full text-left px-3 py-2 rounded-xl text-xs hover:bg-sky-50 text-gray-700 font-medium transition">🎵 Jatuh Suka - Tulus</button>
+        <button onclick="changeSong('to love you more.mp3', 'To Love You More - Celine Dion')" class="w-full text-left px-3 py-2 rounded-xl text-xs hover:bg-sky-50 text-gray-700 font-medium transition">🎵 To Love You More</button>
+        <button onclick="changeSong('2112.mp3', '2112 - Reality Club')" class="w-full text-left px-3 py-2 rounded-xl text-xs hover:bg-sky-50 text-gray-700 font-medium transition">🎵 2112 - Reality Club</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio Element -->
+  <audio id="bgMusic" loop preload="auto">
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Container Utama -->
+  <main class="w-full max-w-xl mx-auto px-4 py-12 z-10 flex flex-col items-center justify-center min-h-screen text-center">
+    
+    <!-- Profil / Foto Header -->
+    <div class="relative mb-6 group cursor-pointer" onclick="triggerConfetti()">
+      <div class="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-white shadow-xl transition-transform duration-500 group-hover:scale-105 mx-auto bg-sky-100">
+        <img id="profileImg" src="https://placehold.co/400x400/bae6fd/0284c7?text=Mahes+🩵" alt="Photo of Mahes" class="w-full h-full object-cover">
+      </div>
+      <span class="absolute bottom-1 right-2 bg-pink-400 text-white p-2 rounded-full shadow-lg text-lg animate-pulse">🎉</span>
+    </div>
+
+    <!-- Greeting Card Glass -->
+    <div class="glass-card rounded-3xl p-6 md:p-8 w-full border border-white/70 mb-6 relative shadow-xl">
+      <h2 class="text-sky-600 font-bold uppercase tracking-widest text-xs md:text-sm mb-2">Special Moment</h2>
+      <h1 class="text-3xl md:text-5xl font-extrabold text-sky-600 mb-3 tracking-tight">
+        Happy Birthday, <br class="md:hidden"><span class="text-pink-400">Mahes! ✨</span>
+      </h1>
+      <p class="text-gray-700 text-sm md:text-base leading-relaxed mb-6 font-medium">
+        Hi Mahes!🎂🥳<br>
+        I genuinely wish you happiness and good things in life. Don't forget to thank yourself, too, because you're always doing your best!
+      </p>
+
+      <!-- Tombol Interaktif -->
+      <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
+        <button onclick="openLetterModal()" class="w-full sm:w-auto btn-glow bg-gradient-to-r from-sky-400 to-sky-500 hover:from-sky-500 hover:to-sky-600 text-white font-semibold px-6 py-3 rounded-2xl flex items-center justify-center gap-2 shadow-md transition">
+          <i class="fa-solid fa-envelope-open-text text-pink-200"></i> Read Birthday Letter
+        </button>
+
+        <button onclick="openMemoryModal()" class="w-full sm:w-auto bg-white/80 hover:bg-white text-sky-600 font-semibold px-6 py-3 rounded-2xl border border-sky-200 flex items-center justify-center gap-2 transition shadow-sm">
+          <i class="fa-solid fa-images text-pink-400"></i> Birthday gift picture
+        </button>
+      </div>
+    </div>
+
+    <!-- Surprise Interactive Button -->
+    <div class="flex gap-4 mb-6">
+      <button onclick="triggerSurprise()" class="bg-pink-300/80 hover:bg-pink-300 text-pink-800 font-bold px-5 py-2.5 rounded-full text-xs md:text-sm shadow-md transition flex items-center gap-2 border border-white/50">
+        <i class="fa-solid fa-gift"></i> Surprise Pop! ✨
+      </button>
+    </div>
+
+    <!-- ================= SECTION GUESTBOOK / DIRECT DISCORD ================= -->
+    <div class="bg-white/80 backdrop-blur p-5 rounded-3xl border border-sky-100 shadow-md max-w-sm w-full mx-auto my-4 text-center">
+      <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-500 bg-indigo-50 px-3 py-1 rounded-full">Interactive Guestbook 💬</span>
+      <h3 class="text-sm font-bold text-gray-800 mt-2">Mau Balas Pesan Ini?</h3>
+      <p class="text-xs text-gray-500 mb-4">Langsung chat atau mampir ke Discord aku ya!</p>
+
+      <!-- Tombol Langsung ke Discord kamu (blueniee) -->
+      <a href="https://discord.com/users/blueniee" target="_blank" onclick="triggerConfetti()" class="w-full bg-[#5865F2] hover:bg-[#4752C4] active:scale-95 text-white text-xs font-bold py-3 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2">
+        <i class="fa-brands fa-discord text-base"></i> Chat di Discord (@blueniee) 🩵
+      </a>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full py-4 text-center text-xs text-sky-800/80 z-10 font-medium">
+    Made with 🩵 specially for <span class="font-bold underline text-pink-500">Mahes</span>
+  </footer>
+
+  <!-- ================= MODAL 1: SURAT UTAMA ================= -->
+  <div id="letterModal" class="hidden fixed inset-0 z-50 bg-slate-900/30 backdrop-blur-sm justify-center items-center p-4">
+    <div class="glass-card bg-white/90 rounded-3xl p-6 md:p-8 max-w-md w-full relative shadow-2xl border border-white text-center">
+      <button onclick="closeLetterModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
+      <div class="w-12 h-12 bg-sky-100 rounded-full flex items-center justify-center mx-auto text-sky-500 text-xl mb-4 shadow-inner">💌</div>
+      <h3 class="text-2xl font-bold text-sky-700 mb-2 font-handwriting">Dear Mahes,</h3>
+      <div class="text-gray-600 text-sm md:text-base space-y-3 leading-relaxed text-left max-h-60 overflow-y-auto pr-2 my-4 font-light">
+        <p>Happy Birthday, Mahes! 🎉</p>
+        <p>Semoga kamu selalu dikelilingi orang-orang baik, punya banyak alasan buat bahagia, and never lose the little things that make you who you are.</p>
+        <p>I'm so glad i got to know you. Thanks for our first meeting, our random conversations at midnight, your stupid jokes, and all the little moments that somehow became precious memories to me.</p>
+        <p>Maybe we can talk or meet again when the time is right. Whatever happens, i'm grateful that our paths crossed. ^^</p>
+        <p>I hope life treats you kindly, Heshes. You deserve good things, and i genuinely hope you find them.</p>
+        <p>By the way my birthday on april 25, jangan lupa yawww tahun depan (ntah nanti kita masih saling inget satu sama lain atau ngga, but a part of me will always remember u).</p>
+        <p>Have a happiest birthday, Heshes! 🩵</p>
+        <p class="font-semibold text-pink-500 text-right italic font-handwriting text-xl mt-4">- With all best wishes 🩵</p>
+      </div>
+      <button onclick="triggerConfetti(); closeLetterModal();" class="mt-2 w-full bg-sky-400 hover:bg-sky-500 text-white font-semibold py-2.5 rounded-xl transition shadow-md">Hope u like this 🤗</button>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 2: MEMORY GALERI ================= -->
+  <div id="memoryModal" class="hidden fixed inset-0 z-50 bg-slate-900/30 backdrop-blur-sm justify-center items-center p-4">
+    <div class="glass-card bg-white/95 rounded-3xl p-6 max-w-md w-full relative shadow-2xl border border-white text-center">
+      <button onclick="closeMemoryModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl font-bold z-10">&times;</button>
+      <h3 class="text-xl font-bold text-sky-700 mb-4">Sweet Treats & You 📸</h3>
+
+      <!-- Slider Container -->
+      <div class="relative overflow-hidden rounded-2xl mb-4 shadow-inner bg-sky-50 min-h-[220px]">
+        <div class="slide-item transition-all duration-500">
+          <img src="cake.jpg" alt="Cake" class="w-full h-48 object-cover rounded-2xl mb-2">
+          <h4 class="text-sm font-semibold text-sky-600">Slice of happiness 🎂</h4>
+          <p class="text-xs text-gray-600 italic">"May your life be as sweet as the cake! ✨"</p>
+        </div>
+        <div class="slide-item hidden transition-all duration-500">
+          <img src="ice cream.jpg" alt="Ice Cream" class="w-full h-48 object-cover rounded-2xl mb-2">
+          <h4 class="text-sm font-semibold text-sky-600">Your favorite 🍦</h4>
+          <p class="text-xs text-gray-600 italic">"Kamu kayaknya suka banget ice cream"</p>
+        </div>
+        <div class="slide-item hidden transition-all duration-500">
+          <img src="hirono.jpg" alt="Hirono" class="w-full h-48 object-cover rounded-2xl mb-2">
+          <h4 class="text-sm font-semibold text-sky-600">Blue's Hirono 🧸🩵</h4>
+          <p class="text-xs text-gray-600 italic">"Katanya aku mirip hirono? Setiap kali liat karakter ini, aku suka inget kamu."</p>
+        </div>
+        <div class="slide-item hidden transition-all duration-500">
+          <img src="evidence.jpg" alt="Evidence" class="w-full h-48 object-cover rounded-2xl mb-2">
+          <h4 class="text-sm font-semibold text-sky-600">Bukti Otentik</h4>
+          <p class="text-xs text-gray-600 italic">"Bilang lucu setiap saat karna lo beneran lucu"</p>
+        </div>
+        <div class="slide-item hidden transition-all duration-500">
+          <img src="evidence2.jpg" alt="Evidence 2" class="w-full h-48 object-cover rounded-2xl mb-2">
+          <h4 class="text-sm font-semibold text-sky-600">Comfort Person ☁️</h4>
+          <p class="text-xs text-gray-600 italic">"Inget ga kamu pernah bilang gini? Makasih ya udah selalu nyimak cerita aku."</p>
+        </div>
+        <div class="slide-item hidden transition-all duration-500">
+          <img src="evidence3.jpg" alt="Evidence 3" class="w-full h-48 object-cover rounded-2xl mb-2">
+          <h4 class="text-sm font-semibold text-sky-600">akusukakamukarna?</h4>
+          <p class="text-xs text-gray-600 italic">"Karna kamu lucu... lucu heshes!!"</p>
+        </div>
+        <div class="slide-item hidden transition-all duration-500">
+          <img src="The Biggest Fans of KING EMYU ⚽🔴.jpg" alt="Emyu" class="w-full h-48 object-cover rounded-2xl mb-2">
+          <h4 class="text-sm font-semibold text-sky-600">The Biggest Fans of KING EMYU ⚽🔴</h4>
+          <p class="text-xs text-gray-600 italic">"King Semvak loves KING EMYU! Kamu heboh banget kalo bahas EMYU."</p>
+        </div>
+        <div class="slide-item hidden transition-all duration-500">
+          <img src="Songs That Remind Me of You 🎧🩵.jpg" alt="Songs" class="w-full h-48 object-cover rounded-2xl mb-2">
+          <h4 class="text-sm font-semibold text-sky-600">Songs That Remind Me of You 🎧🩵</h4>
+          <p class="text-xs text-gray-600 italic">"Setiap lagu di playlist ini keputer, Aku selalu inget kamu."
+        </div>
+        <div class="slide-item hidden transition-all duration-500">
+          <img src="Butterflies in My Stomach 🦋.jpg" alt="Butterflies" class="w-full h-48 object-cover rounded-2xl mb-2">
+          <h4 class="text-sm font-semibold text-sky-600">When i looked at my phone.</h4>
+          <p class="text-xs text-gray-600 italic">"Dulu sering cengengesan setiap baca chat dari kamu, Thanks for bringing those butterflies, Hes."</p>
+        </div>
+        <div class="slide-item hidden transition-all duration-500">
+          <img src="Until We Meet Again 🍂🩵.jpg" alt="End" class="w-full h-48 object-cover rounded-2xl mb-2">
+          <h4 class="text-sm font-semibold text-sky-600">Until We Meet Again 🍂🩵</h4>
+          <p class="text-xs text-gray-600 italic">"​Meskipun sekarang semuanya terasa beda dan canggung, tapi makasih ya pernah jadi bagian yang paling manis, Hes. Happy Birthday! ✨🩵</p>
+        </div>
+      </div>
+
+      <!-- Navigasi Slider Galeri -->
+      <div class="flex justify-between items-center mt-4">
+        <button onclick="prevSlide()" class="bg-sky-100 hover:bg-sky-200 text-sky-700 text-xs font-bold py-2 px-4 rounded-xl transition"><i class="fa-solid fa-arrow-left"></i> Prev</button>
+        <span id="slide-counter" class="text-xs font-bold text-sky-600">1 / 10</span>
+        <button onclick="nextSlide()" class="bg-sky-400 hover:bg-sky-500 text-white text-xs font-bold py-2 px-4 rounded-xl transition">Next <i class="fa-solid fa-arrow-right"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= JAVASCRIPT UTAMA ================= -->
+  <script>
+
+  // 🎈 ANIMASI BLUBUK-BLUBUK EFEK HATI DI BACKGROUND
+    const canvas = document.getElementById('heartCanvas');
+    const ctx = canvas.getContext('2d');
+    let hearts = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Heart {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = canvas.height + 20;
+        this.size = Math.random() * 12 + 8;
+        this.speedY = Math.random() * 1.5 + 0.5;
+        this.speedX = Math.sin(Math.random() * Math.PI) * 0.8;
+        this.opacity = Math.random() * 0.5 + 0.3;
+      }
+      update() {
+        this.y -= this.speedY;
+        this.x += this.speedX;
+        if (this.y < -20) this.reset();
+      }
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = this.opacity;
+        ctx.fillStyle = '#f472b6'; // Warna pink lembut
+        ctx.beginPath();
+        const topCurveHeight = this.size * 0.3;
+        ctx.moveTo(this.x, this.y + topCurveHeight);
+        ctx.bezierCurveTo(
+          this.x, this.y, 
+          this.x - this.size / 2, this.y, 
+          this.x - this.size / 2, this.y + topCurveHeight
+        );
+        ctx.bezierCurveTo(
+          this.x - this.size / 2, this.y + (this.size + topCurveHeight) / 2, 
+          this.x, this.y + this.size, 
+          this.x, this.y + this.size
+        );
+        ctx.bezierCurveTo(
+          this.x, this.y + this.size, 
+          this.x + this.size / 2, this.y + (this.size + topCurveHeight) / 2, 
+          this.x + this.size / 2, this.y + topCurveHeight
+        );
+        ctx.bezierCurveTo(
+          this.x + this.size / 2, this.y, 
+          this.x, this.y, 
+          this.x, this.y + topCurveHeight
+        );
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    // Inisialisasi 25 gelembung hati
+    for (let i = 0; i < 25; i++) {
+      const heart = new Heart();
+      heart.y = Math.random() * canvas.height;
+      hearts.push(heart);
+    }
+
+    function animateHearts() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      hearts.forEach(h => {
+        h.update();
+        h.draw();
+      });
+      requestAnimationFrame(animateHearts);
+    }
+    animateHearts();
+
+    // 1. Variabel Hitung Tap Lilin 3 Kali
+    let tapCount = 0;
+
+    function blowCandle() {
+      tapCount++;
+      const flame = document.getElementById('flame');
+      const hint = document.getElementById('candle-hint');
+      const screen = document.getElementById('candle-screen');
+
+      if (tapCount === 1) {
+        if (hint) hint.innerText = "Satu kali lagi! 💨 (1/3)";
+      } else if (tapCount === 2) {
+        if (hint) hint.innerText = "Dikit lagi, tiup lebih kuat! 💨 (2/3)";
+      } else if (tapCount >= 3) {
+        if (flame) flame.classList.add('hidden');
+        if (hint) hint.innerText = "Yay! Wish granted! ✨";
+
+        if (typeof confetti === 'function') {
+          confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        }
+
+        setTimeout(() => {
+          screen.classList.add('opacity-0');
+          setTimeout(() => { screen.classList.add('hidden'); }, 700);
+        }, 1000);
+      }
+    }
+
+    // 2. Fungsi Toggle Menu Dropdown Musik
+    function toggleMusicMenu() {
+      const dropdown = document.getElementById('musicDropdown');
+      dropdown.classList.toggle('hidden');
+    }
+
+    // 3. Fungsi Ganti Lagu Playlist
+    function changeSong(songFile, songTitle) {
+      const audio = document.getElementById('bgMusic') || document.querySelector('audio');
+      const nowPlaying = document.getElementById('now-playing');
+      const dropdown = document.getElementById('musicDropdown');
+
+      if (audio) {
+        audio.src = songFile;
+        audio.play();
+        if (nowPlaying) nowPlaying.innerText = songTitle;
+        dropdown.classList.add('hidden');
+      }
+    }
+
+    // 4. Modal & Slider Kontrol Tambahan
+    function openLetterModal() {
+      document.getElementById('letterModal').classList.remove('hidden');
+      document.getElementById('letterModal').classList.add('flex');
+    }
+    function closeLetterModal() {
+      document.getElementById('letterModal').classList.add('hidden');
+      document.getElementById('letterModal').classList.remove('flex');
+    }
+
+    function openMemoryModal() {
+      document.getElementById('memoryModal').classList.remove('hidden');
+      document.getElementById('memoryModal').classList.add('flex');
+      showSlide(currentSlide);
+    }
+    function closeMemoryModal() {
+      document.getElementById('memoryModal').classList.add('hidden');
+      document.getElementById('memoryModal').classList.remove('flex');
+    }
+
+    let currentSlide = 0;
+    const slides = document.getElementsByClassName('slide-item');
+
+    function showSlide(n) {
+      for (let i = 0; i < slides.length; i++) {
+        slides[i].classList.add('hidden');
+      }
+      if (n >= slides.length) currentSlide = 0;
+      if (n < 0) currentSlide = slides.length - 1;
+      slides[currentSlide].classList.remove('hidden');
+      
+      const counter = document.getElementById('slide-counter');
+      if (counter) counter.innerText = (currentSlide + 1) + " / " + slides.length;
+    }
+
+    function nextSlide() { currentSlide++; showSlide(currentSlide); }
+    function prevSlide() { currentSlide--; showSlide(currentSlide); }
+
+    function triggerConfetti() {
+      if (typeof confetti === 'function') {
+        confetti({ particleCount: 80, spread: 60, origin: { y: 0.7 } });
+      }
+    }
+
+    function triggerSurprise() {
+      triggerConfetti();
+      alert("Surprise! Have a wonderful day, Mahes! 🩵✨");
+    }
+  </script>
+</body>
+</html>
